@@ -1,34 +1,30 @@
-import { Button, Modal } from "flowbite-react";
-import { useState } from "react";
-
-export function Home() {
-    const [openModal, setOpenModal] = useState(true);
-
+export const Home = () => {
     return (
-        <>
-            <Button onClick={() => setOpenModal(true)}>Toggle modal</Button>
-            <Modal show={openModal} onClose={() => setOpenModal(false)}>
-                <Modal.Header>Terms of Service</Modal.Header>
-                <Modal.Body>
-                    <div className="space-y-6">
-                        <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                            With less than a month to go before the European Union enacts new consumer privacy laws for its citizens,
-                            companies around the world are updating their terms of service agreements to comply.
-                        </p>
-                        <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                            The European Union’s General Data Protection Regulation (G.D.P.R.) goes into effect on May 25 and is meant
-                            to ensure a common set of data rights in the European Union. It requires organizations to notify users as
-                            soon as possible of high-risk data breaches that could personally affect them.
-                        </p>
-                    </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button onClick={() => setOpenModal(false)}>I accept</Button>
-                    <Button color="gray" onClick={() => setOpenModal(false)}>
-                        Decline
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-        </>
+        <main
+            className="flex justify-center items-center min-h-screen text-center py-40 bg-gradient-to-b from-gray-900 to-gray-800 text-white">
+            <div className="max-w-3xl bg-gray-100 p-10 rounded-lg shadow-lg mt-10 mb-10">
+                <h1 className="text-5xl font-bold text-gray-800 mb-5">
+                    Привет, меня зовут <span className="text-blue-600">Александр</span>
+                </h1>
+                <p className="text-lg text-gray-700 leading-relaxed mb-8">
+                    Добро пожаловать на мой сайт портфолио!
+                </p>
+
+                <hr className="border-t-2 border-gray-300 mb-8 w-3/4 mx-auto"/>
+
+                <p className="text-lg text-gray-700 leading-relaxed mb-10">
+                    Здесь вы найдете информацию о моих проектах, навыках и интересах. Этот сайт — моя творческая
+                    площадка, где я делюсь своим опытом и стремлениями в мире веб-разработки.
+                </p>
+
+                <a
+                    href="/projects"
+                    className="inline-flex items-center justify-center mb-10 bg-blue-500 hover:bg-green-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-transform transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2"
+                >
+                    Посмотреть мои проекты
+                </a>
+
+            </div>
+        </main>
     );
-}
+};
