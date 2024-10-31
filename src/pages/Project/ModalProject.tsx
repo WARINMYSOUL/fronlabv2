@@ -1,5 +1,5 @@
 import { Modal, Button } from "flowbite-react";
-import { Project } from "../../types/Project";
+import { Project } from "../../types/Project.ts";
 
 interface ModalProjectProps {
     project: Project | null;

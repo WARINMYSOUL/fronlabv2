@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Modal, Button } from "flowbite-react";
-import { Project } from "../../types/Project";
+import { Project } from "../../types/Project.ts";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
 import { addProject } from "../../store/projectsSlice";

@@ -37,12 +37,6 @@ export function Header() {
                     >
                         Контакты
                     </NavLink>
-                    <NavLink
-                        to="/github-projects"
-                        className={({isActive}) => isActive ? "text-gray-300" : "text-white hover:text-gray-300"}
-                    >
-                        Проекты GitHub
-                    </NavLink>
                 </Navbar.Collapse>
             </div>
         </Navbar>

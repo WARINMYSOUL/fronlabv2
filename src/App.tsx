@@ -6,7 +6,6 @@ import { About } from './pages/About';
 import { Skills } from './pages/Skills';
 import { Projects } from './pages/Project/Projects.tsx';
 import { Contact } from './pages/Contact';
-import {GitHubProjects} from "./services/getUserRepositories.tsx";
 
 function App() {
     return (
@@ -19,7 +18,6 @@ function App() {
                     <Route path="/skills" element={<Skills />} />
                     <Route path="/projects" element={<Projects />} />
                     <Route path="/contact" element={<Contact />} />
-                    <Route path="/github-projects" element={<GitHubProjects />} />
                 </Routes>
             </main>
             <Footer />
