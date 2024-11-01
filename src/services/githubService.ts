@@ -38,9 +38,10 @@ export const mapRepositoryToProject = (repo: Repository): Project => ({
     id: repo.id,
     title: repo.name,
     description: repo.description || 'Описание отсутствует',
-    technologies: repo.languages || [],
+    technologies: repo.languages || [], // Если пусто, добавляется пустой массив
     link: repo.html_url,
 });
+
 
 const token = import.meta.env.VITE_GITHUB_TOKEN;
 
@@ -64,6 +65,7 @@ export const getUserRepositories = async (username: string): Promise<Repository[
 export const getRepositoryLanguages = async (username: string, repoName: string): Promise<string[]> => {
     try {
         const response = await axiosInstance.get<Record<string, number>>(`/repos/${username}/${repoName}/languages`);
+        console.log(`Языки для репозитория ${repoName}:`, Object.keys(response.data)); // Логирование языков
         return Object.keys(response.data);
     } catch (error) {
         console.error(`Ошибка при получении языков для репозитория ${repoName}:`, error);
