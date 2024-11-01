@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState, AppDispatch } from "../../store";
-import { fetchAndAddGitHubProjects } from "../../services/githubService";
-import { Project } from "../../types/Project";
-import { ModalProject } from "./ModalProject";
-import { AddModalProject } from "./AddModalProject";
-import { removeProject } from "../../store/projectsSlice";
-import { FaTrash } from "react-icons/fa";
-import { Button, Spinner, Pagination } from "flowbite-react";
+import {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {RootState, AppDispatch} from "../../store";
+import {fetchAndAddGitHubProjects} from "../../services/githubService";
+import {Project} from "../../types/Project";
+import {ModalProject} from "./ModalProject";
+import {AddModalProject} from "./AddModalProject";
+import {removeProject} from "../../store/projectsSlice";
+import {FaTrash} from "react-icons/fa";
+import {Button, Spinner, Pagination} from "flowbite-react";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -69,7 +69,7 @@ export const Projects = () => {
                 >
                     {loading ? (
                         <>
-                            <Spinner size="sm" aria-label="Загрузка проектов..." />
+                            <Spinner size="sm" aria-label="Загрузка проектов..."/>
                             <span className="pl-3">Загрузка...</span>
                         </>
                     ) : (
@@ -85,7 +85,7 @@ export const Projects = () => {
             </div>
 
             {projects.length > 0 && (
-                <div className="container flex justify-center flex-wrap mb-5 px-4 space-x-4">
+                <div className="container flex justify-center flex-wrap mb-5 px-4 space-x-4 ">
                     <button
                         onClick={() => handleTechChange("All")}
                         className={`px-6 py-3 shadow-md transition-transform transform hover:-translate-y-1 m-2 ${
@@ -108,32 +108,37 @@ export const Projects = () => {
                 </div>
             )}
 
-            <ul className="container list-none p-0 max-w-3xl mx-auto">
+            <ul className="container list-none p-0 max-w-3xl mx-auto ">
                 {currentProjects.map((project, index) => (
                     <li
                         key={index}
-                        className="relative bg-white p-5 mb-4 rounded-lg shadow-md transition-transform transform hover:-translate-y-1 cursor-pointer"
+                        onClick={() => openModal(project)}
+                        className="relative bg-white p-5 mb-4 rounded-lg shadow-md transition-all transform hover:scale-105 hover:bg-gray-200 cursor-pointer"
                     >
                         <div className="flex justify-between items-start">
-                            <h3 className="text-2xl mb-2" onClick={() => openModal(project)}>
+                            <h3 className="text-2xl mb-2 text-blue-800">
                                 {project.title}
                             </h3>
                             <FaTrash
-                                onClick={() => handleDeleteProject(project.id)}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDeleteProject(project.id);
+                                }}
                                 className="text-red-500 cursor-pointer hover:text-red-700"
                                 title="Удалить проект"
                             />
                         </div>
                         <p className="text-lg leading-relaxed mb-2">{project.description}</p>
                         <div className="mb-3 text-gray-600">
-                            <span className="text-sm font-semibold">
-                                Технологии: {Array.isArray(project.technologies) ? project.technologies.join(", ") : "Нет данных"}
-                            </span>
+        <span className="text-sm font-semibold">
+            Технологии: {Array.isArray(project.technologies) ? project.technologies.join(", ") : "Нет данных"}
+        </span>
                         </div>
                         <a
                             href={project.link}
                             target="_blank"
                             rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
                             className="text-blue-400 font-bold hover:underline"
                         >
                             Посмотреть проект
@@ -141,6 +146,7 @@ export const Projects = () => {
                     </li>
                 ))}
             </ul>
+
 
             {/* Пагинация */}
             <div className="flex justify-center mt-6 mb-6">
@@ -152,8 +158,8 @@ export const Projects = () => {
                 />
             </div>
 
-            <ModalProject project={selectedProject} onClose={closeModal} />
-            <AddModalProject isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} />
+            <ModalProject project={selectedProject} onClose={closeModal}/>
+            <AddModalProject isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)}/>
         </div>
     );
 };
