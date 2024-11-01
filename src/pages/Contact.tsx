@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useThemeMode } from "flowbite-react";
+import { useState } from "react";
 
 export const Contact = () => {
+    const { computedMode } = useThemeMode();
     const [name, setName] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [message, setMessage] = useState<string>('');
@@ -29,14 +31,17 @@ export const Contact = () => {
         setMessage('');
     };
 
+    const themeClass = computedMode === "dark" ? "bg-gray-800 text-gray-100 border-gray-600 placeholder-gray-400" : "bg-white text-gray-800 border-gray-300";
 
     return (
-        <div className="container font-sans text-gray-800 max-w-lg mx-auto mb-5">
-            <h1 className="text-4xl text-black mb-5 text-center">Контакты</h1>
-            <p className="text-lg mb-5 text-black text-center">
+        <div className={`container font-sans max-w-lg mx-auto mb-10 mt-10 px-6 ${computedMode === "dark" ? "text-gray-100" : "text-gray-800"}`}>
+            <h1 className={`text-4xl text-center ${computedMode === "dark" ? "text-white" : "text-black"}`}>
+                Контакты
+            </h1>
+            <p className={`text-lg mb-5 text-center ${computedMode === "dark" ? "text-gray-300" : "text-black"}`}>
                 Если у вас есть вопросы, не стесняйтесь обращаться!
             </p>
-            <form onSubmit={handleSubmit} className="container bg-white p-5 rounded-lg shadow-md">
+            <form onSubmit={handleSubmit} className={`container p-5 rounded-lg shadow-md ${computedMode === "dark" ? "bg-gray-800" : "bg-white"}`}>
                 <div className="mb-4">
                     <label htmlFor="name" className="block mb-1">Имя:</label>
                     <input
@@ -46,7 +51,7 @@ export const Contact = () => {
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         required
-                        className="w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                        className={`w-full p-2 rounded-md shadow-sm ${themeClass}`}
                     />
                 </div>
                 <div className="mb-4">
@@ -58,7 +63,7 @@ export const Contact = () => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
-                        className="w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                        className={`w-full p-2 rounded-md shadow-sm ${themeClass}`}
                     />
                 </div>
                 <div className="mb-4">
@@ -69,12 +74,14 @@ export const Contact = () => {
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         required
-                        className="w-full p-2 border border-gray-300 rounded-md shadow-sm min-h-[100px] resize-y"
+                        className={`w-full p-2 rounded-md shadow-sm min-h-[100px] resize-y ${themeClass}`}
                     ></textarea>
                 </div>
                 <button
                     type="submit"
-                    className="w-full p-3 rounded-md bg-blue-500 text-white text-lg hover:bg-black transition-colors"
+                    className={`w-full p-3 rounded-md text-lg transition-colors ${
+                        computedMode === "dark" ? "bg-blue-700 text-white hover:bg-blue-800" : "bg-blue-500 text-white hover:bg-blue-600"
+                    }`}
                 >
                     Отправить
                 </button>

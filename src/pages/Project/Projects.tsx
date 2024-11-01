@@ -1,26 +1,25 @@
-import {useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {RootState, AppDispatch} from "../../store";
-import {fetchAndAddGitHubProjects} from "../../services/githubService";
-import {Project} from "../../types/Project";
-import {ModalProject} from "./ModalProject";
-import {AddModalProject} from "./AddModalProject";
-import {removeProject} from "../../store/projectsSlice";
-import {FaTrash} from "react-icons/fa";
-import {Button, Spinner, Pagination} from "flowbite-react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "../../store";
+import { fetchAndAddGitHubProjects } from "../../services/githubService";
+import { Project } from "../../types/Project";
+import { ModalProject } from "./ModalProject";
+import { AddModalProject } from "./AddModalProject";
+import { removeProject } from "../../store/projectsSlice";
+import { FaTrash } from "react-icons/fa";
+import { Button, Spinner, Pagination } from "flowbite-react";
 
 const ITEMS_PER_PAGE = 5;
 
 export const Projects = () => {
     const dispatch = useDispatch<AppDispatch>();
     const projects = useSelector((state: RootState) => state.projects.items);
-    const [selectedTech, setSelectedTech] = useState<string>("All");
+    const [selectedTech, setSelectedTech] = useState<string[]>([]);
     const [selectedProject, setSelectedProject] = useState<Project | null>(null);
     const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [currentPage, setCurrentPage] = useState<number>(1);
 
-    // Функция для загрузки проектов с задержкой
     const loadProjects = async () => {
         setLoading(true);
         setTimeout(async () => {
@@ -34,11 +33,19 @@ export const Projects = () => {
     }, [dispatch]);
 
     const technologies = Array.from(new Set(projects.flatMap((project) => project.technologies || [])));
+
+    const toggleTech = (tech: string) => {
+        setSelectedTech((prevSelectedTech) =>
+            prevSelectedTech.includes(tech)
+                ? prevSelectedTech.filter((t) => t !== tech)
+                : [...prevSelectedTech, tech]
+        );
+    };
+
     const filteredProjects = projects.filter(project =>
-        selectedTech === "All" ? true : project.technologies?.includes(selectedTech)
+        selectedTech.length === 0 || project.technologies?.some(tech => selectedTech.includes(tech))
     );
 
-    // Логика для отображения текущих проектов на странице
     const totalPages = Math.ceil(filteredProjects.length / ITEMS_PER_PAGE);
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const currentProjects = filteredProjects.slice(startIndex, startIndex + ITEMS_PER_PAGE);
@@ -50,57 +57,50 @@ export const Projects = () => {
         dispatch(removeProject(id));
     };
 
-    const handleTechChange = (tech: string) => {
-        setSelectedTech(tech);
-        setCurrentPage(1);
-    };
-
-    const onPageChange = (page: number) => setCurrentPage(page); // Обработчик изменения страницы
+    const onPageChange = (page: number) => setCurrentPage(page);
 
     return (
-        <div className="container mx-auto font-sans text-gray-800">
-            <h2 className="text-4xl text-black mb-5 text-center">Проекты</h2>
-
-            {/* Кнопка для обновления и добавления проектов */}
-            <div className="flex justify-center mb-5 space-x-4">
+        <div className="content-center mx-auto px-6 font-sans text-gray-800 dark:text-gray-100 dark:bg-gray-900">
+            <h2 className="text-4xl text-black dark:text-gray-200 mb-5 mt-5 text-center">Проекты</h2>
+            <div className="content-center flex justify-center mb-5 space-x-2">
                 <Button
                     onClick={loadProjects}
-                    className="bg-blue-500 text-white px-6 py-1 rounded-lg shadow-md hover:bg-blue-600 transition-transform transform hover:-translate-y-1"
+                    className="bg-blue-500 dark:bg-blue-700 text-white px-4 py-1 rounded-lg shadow-md hover:bg-blue-600 dark:hover:bg-blue-800 transition-transform transform hover:-translate-y-1 text-sm"
                 >
                     {loading ? (
                         <>
-                            <Spinner size="sm" aria-label="Загрузка проектов..."/>
-                            <span className="pl-3">Загрузка...</span>
+                            <Spinner size="sm" aria-label="Загрузка проектов..." />
+                            <span className="pl-2">Загрузка...</span>
                         </>
                     ) : (
-                        "Обновить проекты"
+                        "Обновить"
                     )}
                 </Button>
                 <Button
                     onClick={() => setIsAddModalOpen(true)}
-                    className="bg-green-500 text-white px-6 py-1 rounded-lg shadow-md hover:bg-green-600 transition-transform transform hover:-translate-y-1"
+                    className="bg-green-500 dark:bg-green-700 text-white px-4 py-1 rounded-lg shadow-md hover:bg-green-600 dark:hover:bg-green-800 transition-transform transform hover:-translate-y-1 text-sm"
                 >
-                    Добавить проект
+                    Добавить
                 </Button>
             </div>
 
             {projects.length > 0 && (
-                <div className="container flex justify-center flex-wrap mb-5 px-4 space-x-4 ">
+                <div className="content-center flex justify-center flex-wrap mb-5 px-4 space-x-2">
                     <button
-                        onClick={() => handleTechChange("All")}
-                        className={`px-6 py-3 shadow-md transition-transform transform hover:-translate-y-1 m-2 ${
-                            selectedTech === "All" ? "bg-blue-500 text-white" : "bg-white text-gray-700"
-                        } border border-gray-300 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg`}
+                        onClick={() => setSelectedTech([])} // сбросить фильтр
+                        className={`px-4 py-2 shadow-md transition-transform transform hover:-translate-y-1 m-2 text-sm ${
+                            selectedTech.length === 0 ? "bg-blue-500 dark:bg-blue-700 text-white" : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100"
+                        } border border-gray-300 dark:border-gray-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg`}
                     >
                         Все
                     </button>
                     {technologies.map((tech, index) => (
                         <button
                             key={tech || index}
-                            onClick={() => handleTechChange(tech)}
-                            className={`px-6 py-3 shadow-md transition-transform transform hover:-translate-y-1 m-2 ${
-                                selectedTech === tech ? "bg-blue-500 text-white" : "bg-white text-gray-700"
-                            } border border-gray-300 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg`}
+                            onClick={() => toggleTech(tech)}
+                            className={`px-4 py-2 shadow-md transition-transform transform hover:-translate-y-1 m-2 text-sm ${
+                                selectedTech.includes(tech) ? "bg-blue-500 dark:bg-blue-700 text-white" : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100"
+                            } border border-gray-300 dark:border-gray-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg`}
                         >
                             {tech}
                         </button>
@@ -108,38 +108,36 @@ export const Projects = () => {
                 </div>
             )}
 
-            <ul className="container list-none p-0 max-w-3xl mx-auto ">
+            <ul className="content-center list-none p-0 max-w-3xl mx-auto">
                 {currentProjects.map((project, index) => (
                     <li
                         key={index}
                         onClick={() => openModal(project)}
-                        className="relative bg-white p-5 mb-4 rounded-lg shadow-md transition-all transform hover:scale-105 hover:bg-gray-200 cursor-pointer"
+                        className="relative bg-white dark:bg-gray-800 p-5 mb-4 rounded-lg shadow-md transition-all transform hover:scale-105 cursor-pointer"
                     >
                         <div className="flex justify-between items-start">
-                            <h3 className="text-2xl mb-2 text-blue-800">
-                                {project.title}
-                            </h3>
+                            <h3 className="text-2xl mb-2 text-blue-800 dark:text-blue-400">{project.title}</h3>
                             <FaTrash
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     handleDeleteProject(project.id);
                                 }}
-                                className="text-red-500 cursor-pointer hover:text-red-700"
+                                className="text-red-500 dark:text-red-400 cursor-pointer hover:text-red-700 dark:hover:text-red-600"
                                 title="Удалить проект"
                             />
                         </div>
                         <p className="text-lg leading-relaxed mb-2">{project.description}</p>
-                        <div className="mb-3 text-gray-600">
-        <span className="text-sm font-semibold">
-            Технологии: {Array.isArray(project.technologies) ? project.technologies.join(", ") : "Нет данных"}
-        </span>
+                        <div className="mb-3 text-gray-600 dark:text-gray-300">
+                            <span className="text-sm font-semibold">
+                                Технологии: {Array.isArray(project.technologies) ? project.technologies.join(", ") : "Нет данных"}
+                            </span>
                         </div>
                         <a
                             href={project.link}
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={(e) => e.stopPropagation()}
-                            className="text-blue-400 font-bold hover:underline"
+                            className="text-blue-400 dark:text-blue-300 font-bold hover:underline"
                         >
                             Посмотреть проект
                         </a>
@@ -147,19 +145,12 @@ export const Projects = () => {
                 ))}
             </ul>
 
-
-            {/* Пагинация */}
-            <div className="flex justify-center mt-6 mb-6">
-                <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={onPageChange}
-                    showIcons
-                />
+            <div className="flex justify-center mt-6 mb-10">
+                <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} showIcons />
             </div>
 
-            <ModalProject project={selectedProject} onClose={closeModal}/>
-            <AddModalProject isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)}/>
+            <ModalProject project={selectedProject} onClose={closeModal} />
+            <AddModalProject isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} />
         </div>
     );
 };
