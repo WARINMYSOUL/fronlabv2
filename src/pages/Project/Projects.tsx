@@ -9,7 +9,7 @@ import { removeProject } from "../../store/projectsSlice";
 import { FaTrash } from "react-icons/fa";
 import { Button, Spinner, Pagination } from "flowbite-react";
 
-const ITEMS_PER_PAGE = 5; // Количество проектов на одной странице
+const ITEMS_PER_PAGE = 5;
 
 export const Projects = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -18,7 +18,7 @@ export const Projects = () => {
     const [selectedProject, setSelectedProject] = useState<Project | null>(null);
     const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
-    const [currentPage, setCurrentPage] = useState<number>(1); // Текущее состояние страницы
+    const [currentPage, setCurrentPage] = useState<number>(1);
 
     // Функция для загрузки проектов с задержкой
     const loadProjects = async () => {
@@ -50,10 +50,9 @@ export const Projects = () => {
         dispatch(removeProject(id));
     };
 
-    // Обработчик изменения фильтрации по технологии с сбросом страницы на 1
     const handleTechChange = (tech: string) => {
         setSelectedTech(tech);
-        setCurrentPage(1); // Сброс на первую страницу при изменении технологии
+        setCurrentPage(1);
     };
 
     const onPageChange = (page: number) => setCurrentPage(page); // Обработчик изменения страницы
