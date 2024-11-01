@@ -1,7 +1,15 @@
+import { useThemeMode } from "flowbite-react";
+
 export const About = () => {
+    const { computedMode } = useThemeMode();
+
     return (
-        <div className="container mx-auto px-6 py-16 text-gray-800 font-sans max-w-4xl bg-white shadow-lg rounded-lg mb-10 mt-10">
-            <h2 className="text-5xl font-bold text-center text-blue-600 mb-10">
+        <div className={`container mx-auto px-6 py-16 font-sans max-w-4xl mb-5 mt-10 ${
+            computedMode === "dark" ? "bg-gray-900 text-gray-100" : "bg-white text-gray-800"
+        }`}>
+            <h2 className={`text-5xl font-bold text-center mb-10 ${
+                computedMode === "dark" ? "text-blue-400" : "text-blue-600"
+            }`}>
                 Обо мне
             </h2>
             <p className="text-lg leading-relaxed mb-10 text-justify">
@@ -10,7 +18,9 @@ export const About = () => {
             </p>
 
             <section className="mb-12">
-                <h3 className="text-3xl font-semibold text-gray-900 mb-4 border-b-2 border-blue-500 inline-block">
+                <h3 className={`text-3xl font-semibold mb-4 border-b-2 inline-block ${
+                    computedMode === "dark" ? "text-gray-100 border-blue-400" : "text-gray-900 border-blue-500"
+                }`}>
                     Образование
                 </h3>
                 <p className="text-lg leading-relaxed text-justify">
@@ -21,7 +31,9 @@ export const About = () => {
             </section>
 
             <section className="mb-12">
-                <h3 className="text-3xl font-semibold text-gray-900 mb-4 border-b-2 border-blue-500 inline-block">
+                <h3 className={`text-3xl font-semibold mb-4 border-b-2 inline-block ${
+                    computedMode === "dark" ? "text-gray-100 border-blue-400" : "text-gray-900 border-blue-500"
+                }`}>
                     Проекты
                 </h3>
                 <p className="text-lg leading-relaxed text-justify mb-5">
@@ -36,7 +48,9 @@ export const About = () => {
             </section>
 
             <section className="mb-12">
-                <h3 className="text-3xl font-semibold text-gray-900 mb-4 border-b-2 border-blue-500 inline-block ">
+                <h3 className={`text-3xl font-semibold mb-4 border-b-2 inline-block ${
+                    computedMode === "dark" ? "text-gray-100 border-blue-400" : "text-gray-900 border-blue-500"
+                }`}>
                     Интересы
                 </h3>
                 <p className="text-lg leading-relaxed text-justify">

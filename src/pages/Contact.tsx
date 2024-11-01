@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useThemeMode } from "flowbite-react";
+import { useState } from "react";
 
 export const Contact = () => {
+    const { computedMode } = useThemeMode();
     const [name, setName] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [message, setMessage] = useState<string>('');
@@ -29,14 +31,19 @@ export const Contact = () => {
         setMessage('');
     };
 
-
     return (
-        <div className="container font-sans text-gray-800 max-w-lg mx-auto mb-5">
-            <h1 className="text-4xl text-black mb-5 text-center">Контакты</h1>
-            <p className="text-lg mb-5 text-black text-center">
+        <div className={`container font-sans max-w-lg mx-auto mb-5 ${
+            computedMode === "dark" ? "text-gray-100" : "text-gray-800"
+        }`}>
+            <h1 className={`text-4xl mb-5 text-center ${computedMode === "dark" ? "text-white" : "text-black"}`}>
+                Контакты
+            </h1>
+            <p className={`text-lg mb-5 text-center ${computedMode === "dark" ? "text-gray-300" : "text-black"}`}>
                 Если у вас есть вопросы, не стесняйтесь обращаться!
             </p>
-            <form onSubmit={handleSubmit} className="container bg-white p-5 rounded-lg shadow-md">
+            <form onSubmit={handleSubmit} className={`container p-5 rounded-lg shadow-md ${
+                computedMode === "dark" ? "bg-gray-800" : "bg-white"
+            }`}>
                 <div className="mb-4">
                     <label htmlFor="name" className="block mb-1">Имя:</label>
                     <input
@@ -74,7 +81,9 @@ export const Contact = () => {
                 </div>
                 <button
                     type="submit"
-                    className="w-full p-3 rounded-md bg-blue-500 text-white text-lg hover:bg-black transition-colors"
+                    className={`w-full p-3 rounded-md text-lg transition-colors ${
+                        computedMode === "dark" ? "bg-blue-700 text-white hover:bg-blue-800" : "bg-blue-500 text-white hover:bg-blue-600"
+                    }`}
                 >
                     Отправить
                 </button>
