@@ -4,6 +4,7 @@ import { Project } from "../../types/Project.ts";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
 import { addProject } from "../../store/projectsSlice";
+import { useThemeMode } from "flowbite-react";
 
 interface AddModalProjectProps {
     isOpen: boolean;
@@ -12,6 +13,7 @@ interface AddModalProjectProps {
 
 export const AddModalProject: React.FC<AddModalProjectProps> = ({ isOpen, onClose }) => {
     const dispatch = useDispatch<AppDispatch>();
+    const { computedMode } = useThemeMode();
 
     const [newProject, setNewProject] = useState<Project>({
         id: Date.now(),
@@ -37,14 +39,16 @@ export const AddModalProject: React.FC<AddModalProjectProps> = ({ isOpen, onClos
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         dispatch(addProject(newProject));
-        onClose(); // Закрываем модальное окно после добавления проекта
-        setNewProject({ id: Date.now(), title: "", description: "", technologies: [], link: "" }); // Сброс формы
+        onClose();
+        setNewProject({ id: Date.now(), title: "", description: "", technologies: [], link: "" });
     };
+
+    const themeClass = computedMode === "dark" ? "bg-gray-900 text-gray-100" : "bg-white text-gray-800";
 
     return (
         <Modal show={isOpen} onClose={onClose}>
-            <Modal.Header>Добавить новый проект</Modal.Header>
-            <Modal.Body>
+            <Modal.Header className={themeClass}>Добавить новый проект</Modal.Header>
+            <Modal.Body className={themeClass}>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
                         <label className="block text-sm font-semibold mb-1">Название проекта</label>
@@ -53,7 +57,7 @@ export const AddModalProject: React.FC<AddModalProjectProps> = ({ isOpen, onClos
                             name="title"
                             value={newProject.title}
                             onChange={handleInputChange}
-                            className="w-full p-2 border rounded-lg"
+                            className={`w-full p-2 border rounded-lg ${themeClass}`}
                             required
                         />
                     </div>
@@ -63,7 +67,7 @@ export const AddModalProject: React.FC<AddModalProjectProps> = ({ isOpen, onClos
                             name="description"
                             value={newProject.description}
                             onChange={handleInputChange}
-                            className="w-full p-2 border rounded-lg"
+                            className={`w-full p-2 border rounded-lg ${themeClass}`}
                             required
                         />
                     </div>
@@ -73,7 +77,7 @@ export const AddModalProject: React.FC<AddModalProjectProps> = ({ isOpen, onClos
                             type="text"
                             value={newProject.technologies.join(", ")}
                             onChange={handleTechChange}
-                            className="w-full p-2 border rounded-lg"
+                            className={`w-full p-2 border rounded-lg ${themeClass}`}
                             placeholder="React, TypeScript, Redux"
                             required
                         />
@@ -85,7 +89,7 @@ export const AddModalProject: React.FC<AddModalProjectProps> = ({ isOpen, onClos
                             name="link"
                             value={newProject.link}
                             onChange={handleInputChange}
-                            className="w-full p-2 border rounded-lg"
+                            className={`w-full p-2 border rounded-lg ${themeClass}`}
                             required
                         />
                     </div>

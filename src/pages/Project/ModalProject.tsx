@@ -1,5 +1,6 @@
 import { Modal, Button } from "flowbite-react";
 import { Project } from "../../types/Project.ts";
+import { useThemeMode } from "flowbite-react";
 
 interface ModalProjectProps {
     project: Project | null;
@@ -7,28 +8,27 @@ interface ModalProjectProps {
 }
 
 export const ModalProject: React.FC<ModalProjectProps> = ({ project, onClose }) => {
+    const { computedMode } = useThemeMode();
+
     if (!project) return null;
 
+    const themeClass = computedMode === "dark" ? "bg-gray-900 text-gray-100" : "bg-white text-gray-800";
+
     return (
-        <Modal
-            show={Boolean(project)}
-            onClose={onClose}
-            className="!overflow-y-auto" // Разрешить прокрутку
-            dismissible
-        >
-            <Modal.Header>{project.title}</Modal.Header>
-            <Modal.Body>
+        <Modal show={Boolean(project)} onClose={onClose} className="!overflow-y-auto" dismissible>
+            <Modal.Header className={themeClass}>{project.title}</Modal.Header>
+            <Modal.Body className={themeClass}>
                 <div className="space-y-6">
-                    <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                    <p className="text-base leading-relaxed">
                         {project.description}
                     </p>
-                    <div className="text-sm text-gray-600">
+                    <div className="text-sm">
                         <span className="font-semibold">Технологии: </span>
                         {project.technologies.join(", ")}
                     </div>
                 </div>
             </Modal.Body>
-            <Modal.Footer>
+            <Modal.Footer className={themeClass}>
                 <Button onClick={onClose}>Закрыть</Button>
             </Modal.Footer>
         </Modal>

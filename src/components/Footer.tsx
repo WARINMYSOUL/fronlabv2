@@ -8,11 +8,11 @@ export const Footer = () => {
     return (
         <FlowbiteFooter
             container
-            className={`w-full mt-10 py-6 ${
+            className={`w-full  py-6 rounded-none ${
                 computedMode === "dark" ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-800"
             }`}
         >
-            <div className="w-full flex flex-col items-center">
+            <div className="w-full flex flex-col items-center mb-10 mt-5">
                 <div className="grid w-full justify-center text-center sm:flex sm:justify-center md:grid-cols-1 gap-5">
                     <FooterSection title="О проекте" links={["Цели проекта", "Используемые технологии", "Команда разработки"]} />
                     <FooterSection

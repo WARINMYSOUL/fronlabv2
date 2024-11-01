@@ -4,11 +4,11 @@ export const Home = () => {
     const { computedMode } = useThemeMode();
 
     return (
-        <main className={`flex justify-center items-center min-h-screen text-center py-40 ${
+        <main className={`flex flex-col justify-center items-center min-h-screen text-center py-40 ${
             computedMode === "dark" ? "bg-gradient-to-b from-gray-900 to-gray-800 text-white" : "bg-gradient-to-b from-gray-100 to-gray-50 text-gray-800"
         }`}>
-            <div className={`max-w-3xl p-10 rounded-lg  mt-10 mb-10 ${
-                computedMode === "dark" ? "bg-gray-900 text-gray-100" : " text-gray-800"
+            <div className={`max-w-3xl p-10 rounded-lg mt-10 mb-10 px-6 ${
+                computedMode === "dark" ? "bg-gray-900 text-gray-100" : "bg-white text-gray-800"
             }`}>
                 <h1 className="text-5xl font-bold mb-5">
                     Привет, меня зовут <span className="text-blue-600">Александр</span>
@@ -23,6 +23,18 @@ export const Home = () => {
                     Здесь вы найдете информацию о моих проектах, навыках и интересах. Этот сайт — моя творческая
                     площадка, где я делюсь своим опытом и стремлениями в мире веб-разработки.
                 </p>
+
+                <section className="mb-10">
+                    <h2 className="text-3xl font-bold mb-5 text-blue-600">Мои цели</h2>
+                    <p className="text-lg leading-relaxed mb-4">
+                        Моя цель — стать профессиональным разработчиком, который может решать сложные задачи и
+                        разрабатывать качественные веб-приложения, которые улучшают опыт пользователей.
+                    </p>
+                    <p className="text-lg leading-relaxed mb-4">
+                        Я стремлюсь к постоянному обучению, чтобы идти в ногу с новыми технологиями и подходами в
+                        программировании.
+                    </p>
+                </section>
 
                 <a
                     href="/projects"

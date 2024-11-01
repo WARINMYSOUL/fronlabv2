@@ -14,7 +14,7 @@ const ITEMS_PER_PAGE = 5;
 export const Projects = () => {
     const dispatch = useDispatch<AppDispatch>();
     const projects = useSelector((state: RootState) => state.projects.items);
-    const [selectedTech, setSelectedTech] = useState<string>("All");
+    const [selectedTech, setSelectedTech] = useState<string[]>([]);
     const [selectedProject, setSelectedProject] = useState<Project | null>(null);
     const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
@@ -33,8 +33,17 @@ export const Projects = () => {
     }, [dispatch]);
 
     const technologies = Array.from(new Set(projects.flatMap((project) => project.technologies || [])));
+
+    const toggleTech = (tech: string) => {
+        setSelectedTech((prevSelectedTech) =>
+            prevSelectedTech.includes(tech)
+                ? prevSelectedTech.filter((t) => t !== tech)
+                : [...prevSelectedTech, tech]
+        );
+    };
+
     const filteredProjects = projects.filter(project =>
-        selectedTech === "All" ? true : project.technologies?.includes(selectedTech)
+        selectedTech.length === 0 || project.technologies?.some(tech => selectedTech.includes(tech))
     );
 
     const totalPages = Math.ceil(filteredProjects.length / ITEMS_PER_PAGE);
@@ -48,44 +57,39 @@ export const Projects = () => {
         dispatch(removeProject(id));
     };
 
-    const handleTechChange = (tech: string) => {
-        setSelectedTech(tech);
-        setCurrentPage(1);
-    };
-
     const onPageChange = (page: number) => setCurrentPage(page);
 
     return (
-        <div className="content-center mx-auto font-sans text-gray-800 dark:text-gray-100 dark:bg-gray-900">
+        <div className="content-center mx-auto px-6 font-sans text-gray-800 dark:text-gray-100 dark:bg-gray-900">
             <h2 className="text-4xl text-black dark:text-gray-200 mb-5 mt-5 text-center">Проекты</h2>
-            <div className="content-center flex justify-center mb-5 space-x-4">
+            <div className="content-center flex justify-center mb-5 space-x-2">
                 <Button
                     onClick={loadProjects}
-                    className="bg-blue-500 dark:bg-blue-700 text-white px-6 py-1 rounded-lg shadow-md hover:bg-blue-600 dark:hover:bg-blue-800 transition-transform transform hover:-translate-y-1"
+                    className="bg-blue-500 dark:bg-blue-700 text-white px-4 py-1 rounded-lg shadow-md hover:bg-blue-600 dark:hover:bg-blue-800 transition-transform transform hover:-translate-y-1 text-sm"
                 >
                     {loading ? (
                         <>
                             <Spinner size="sm" aria-label="Загрузка проектов..." />
-                            <span className="pl-3">Загрузка...</span>
+                            <span className="pl-2">Загрузка...</span>
                         </>
                     ) : (
-                        "Обновить проекты"
+                        "Обновить"
                     )}
                 </Button>
                 <Button
                     onClick={() => setIsAddModalOpen(true)}
-                    className="bg-green-500 dark:bg-green-700 text-white px-6 py-1 rounded-lg shadow-md hover:bg-green-600 dark:hover:bg-green-800 transition-transform transform hover:-translate-y-1"
+                    className="bg-green-500 dark:bg-green-700 text-white px-4 py-1 rounded-lg shadow-md hover:bg-green-600 dark:hover:bg-green-800 transition-transform transform hover:-translate-y-1 text-sm"
                 >
-                    Добавить проект
+                    Добавить
                 </Button>
             </div>
 
             {projects.length > 0 && (
-                <div className="content-center flex justify-center flex-wrap mb-5 px-4 space-x-4">
+                <div className="content-center flex justify-center flex-wrap mb-5 px-4 space-x-2">
                     <button
-                        onClick={() => handleTechChange("All")}
-                        className={`px-6 py-3 shadow-md transition-transform transform hover:-translate-y-1 m-2 ${
-                            selectedTech === "All" ? "bg-blue-500 dark:bg-blue-700 text-white" : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100"
+                        onClick={() => setSelectedTech([])} // сбросить фильтр
+                        className={`px-4 py-2 shadow-md transition-transform transform hover:-translate-y-1 m-2 text-sm ${
+                            selectedTech.length === 0 ? "bg-blue-500 dark:bg-blue-700 text-white" : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100"
                         } border border-gray-300 dark:border-gray-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg`}
                     >
                         Все
@@ -93,9 +97,9 @@ export const Projects = () => {
                     {technologies.map((tech, index) => (
                         <button
                             key={tech || index}
-                            onClick={() => handleTechChange(tech)}
-                            className={`px-6 py-3 shadow-md transition-transform transform hover:-translate-y-1 m-2 ${
-                                selectedTech === tech ? "bg-blue-500 dark:bg-blue-700 text-white" : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100"
+                            onClick={() => toggleTech(tech)}
+                            className={`px-4 py-2 shadow-md transition-transform transform hover:-translate-y-1 m-2 text-sm ${
+                                selectedTech.includes(tech) ? "bg-blue-500 dark:bg-blue-700 text-white" : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100"
                             } border border-gray-300 dark:border-gray-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg`}
                         >
                             {tech}
