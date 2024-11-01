@@ -18,7 +18,6 @@ function App() {
             <div className={`flex flex-col min-h-screen ${computedMode === "dark" ? "bg-gray-900 text-white" : "bg-white text-gray-900"}`}>
                 <Header />
                 <main className="flex-grow">
-                    {/* Используем mode="wait" вместо exitBeforeEnter */}
                     <AnimatePresence mode="wait">
                         <Routes location={location} key={location.pathname}>
                             <Route
