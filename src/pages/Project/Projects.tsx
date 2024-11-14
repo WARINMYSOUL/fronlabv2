@@ -22,10 +22,8 @@ export const Projects = () => {
 
     const loadProjects = async () => {
         setLoading(true);
-        setTimeout(async () => {
-            await dispatch((dispatch, getState) => fetchAndAddGitHubProjects("WARINMYSOUL", dispatch, getState));
-            setLoading(false);
-        }, 1000);
+        await dispatch((dispatch, getState) => fetchAndAddGitHubProjects("WARINMYSOUL", dispatch, getState));
+        setLoading(false);
     };
 
     useEffect(() => {

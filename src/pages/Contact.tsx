@@ -1,11 +1,19 @@
 import { useThemeMode } from "flowbite-react";
 import { useState } from "react";
 
+interface ContactFormState {
+    name: string;
+    email: string;
+    message: string;
+}
+
 export const Contact = () => {
     const { computedMode } = useThemeMode();
-    const [name, setName] = useState<string>('');
-    const [email, setEmail] = useState<string>('');
-    const [message, setMessage] = useState<string>('');
+    const [formState, setFormState] = useState<ContactFormState>({
+        name: '',
+        email: '',
+        message: ''
+    });
     const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
     const validateEmail = (email: string) => {
@@ -13,8 +21,18 @@ export const Contact = () => {
         return emailRegex.test(email);
     };
 
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setFormState(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        const { name, email, message } = formState;
+
         if (!name || !email || !message) {
             alert("Пожалуйста, заполните все поля формы.");
             return;
@@ -26,9 +44,7 @@ export const Contact = () => {
 
         // Отправка формы
         setIsSubmitted(true);
-        setName('');
-        setEmail('');
-        setMessage('');
+        setFormState({ name: '', email: '', message: '' });
     };
 
     const themeClass = computedMode === "dark" ? "bg-gray-800 text-gray-100 border-gray-600 placeholder-gray-400" : "bg-white text-gray-800 border-gray-300";
@@ -47,9 +63,10 @@ export const Contact = () => {
                     <input
                         type="text"
                         id="name"
+                        name="name"
                         placeholder="Ваше имя"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        value={formState.name}
+                        onChange={handleChange}
                         required
                         className={`w-full p-2 rounded-md shadow-sm ${themeClass}`}
                     />
@@ -59,9 +76,10 @@ export const Contact = () => {
                     <input
                         type="email"
                         id="email"
+                        name="email"
                         placeholder="Ваш email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        value={formState.email}
+                        onChange={handleChange}
                         required
                         className={`w-full p-2 rounded-md shadow-sm ${themeClass}`}
                     />
@@ -70,9 +88,10 @@ export const Contact = () => {
                     <label htmlFor="message" className="block mb-1">Сообщение:</label>
                     <textarea
                         id="message"
+                        name="message"
                         placeholder="Ваше сообщение"
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
+                        value={formState.message}
+                        onChange={handleChange}
                         required
                         className={`w-full p-2 rounded-md shadow-sm min-h-[100px] resize-y ${themeClass}`}
                     ></textarea>
