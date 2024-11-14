@@ -40,7 +40,7 @@ const projectsSlice = createSlice({
         addProject(state, action: PayloadAction<Project>) {
             state.items.push(action.payload);
         },
-        removeProject(state, action: PayloadAction<number>) {
+        removeProject(state, action: PayloadAction<string>) {
             state.items = state.items.filter(project => project.id !== action.payload);
         },
     },

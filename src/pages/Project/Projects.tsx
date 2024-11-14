@@ -53,7 +53,7 @@ export const Projects = () => {
     const openModal = (project: Project) => setSelectedProject(project);
     const closeModal = () => setSelectedProject(null);
 
-    const handleDeleteProject = (id: number) => {
+    const handleDeleteProject = (id: string) => {
         dispatch(removeProject(id));
     };
 
@@ -109,9 +109,9 @@ export const Projects = () => {
             )}
 
             <ul className="content-center list-none p-0 max-w-3xl mx-auto">
-                {currentProjects.map((project, index) => (
+                {currentProjects.map((project) => (
                     <li
-                        key={index}
+                        key={project.id}
                         onClick={() => openModal(project)}
                         className="relative bg-white dark:bg-gray-800 p-5 mb-4 rounded-lg shadow-md transition-all transform hover:scale-105 cursor-pointer"
                     >
@@ -120,7 +120,7 @@ export const Projects = () => {
                             <FaTrash
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    handleDeleteProject(project.id);
+                                    handleDeleteProject(project.id); // Убедитесь, что функция handleDeleteProject принимает строку
                                 }}
                                 className="text-red-500 dark:text-red-400 cursor-pointer hover:text-red-700 dark:hover:text-red-600"
                                 title="Удалить проект"
@@ -128,9 +128,9 @@ export const Projects = () => {
                         </div>
                         <p className="text-lg leading-relaxed mb-2">{project.description}</p>
                         <div className="mb-3 text-gray-600 dark:text-gray-300">
-                            <span className="text-sm font-semibold">
-                                Технологии: {Array.isArray(project.technologies) ? project.technologies.join(", ") : "Нет данных"}
-                            </span>
+            <span className="text-sm font-semibold">
+                Технологии: {Array.isArray(project.technologies) ? project.technologies.join(", ") : "Нет данных"}
+            </span>
                         </div>
                         <a
                             href={project.link}
@@ -143,6 +143,7 @@ export const Projects = () => {
                         </a>
                     </li>
                 ))}
+
             </ul>
 
             <div className="flex justify-center mt-6 mb-10">

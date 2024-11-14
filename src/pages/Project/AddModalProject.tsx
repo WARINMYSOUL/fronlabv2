@@ -6,6 +6,7 @@ import { AppDispatch } from "../../store";
 import { addProject } from "../../store/projectsSlice";
 import { useThemeMode } from "flowbite-react";
 import { motion } from "framer-motion";
+import { v4 as uuidv4 } from "uuid";
 
 interface AddModalProjectProps {
     isOpen: boolean;
@@ -17,7 +18,7 @@ export const AddModalProject: React.FC<AddModalProjectProps> = ({ isOpen, onClos
     const { computedMode } = useThemeMode();
 
     const [newProject, setNewProject] = useState<Project>({
-        id: Date.now(),
+        id: uuidv4(),
         title: "",
         description: "",
         technologies: [],
@@ -41,7 +42,7 @@ export const AddModalProject: React.FC<AddModalProjectProps> = ({ isOpen, onClos
         e.preventDefault();
         dispatch(addProject(newProject));
         onClose();
-        setNewProject({ id: Date.now(), title: "", description: "", technologies: [], link: "" });
+        setNewProject({ id: uuidv4(), title: "", description: "", technologies: [], link: "" });
     };
 
     const themeClass = computedMode === "dark" ? "bg-gray-900 text-gray-100" : "bg-white text-gray-800";
