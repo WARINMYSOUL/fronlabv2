@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../../store";
 import { fetchAndAddGitHubProjects } from "../../services/githubService";
@@ -32,32 +32,38 @@ export const Projects = () => {
         loadProjects();
     }, [dispatch]);
 
-    const technologies = Array.from(new Set(projects.flatMap((project) => project.technologies || [])));
+    const technologies = useMemo(() => {
+        return Array.from(new Set(projects.flatMap((project) => project.technologies || [])));
+    }, [projects]);
 
-    const toggleTech = (tech: string) => {
+    const toggleTech = useCallback((tech: string) => {
         setSelectedTech((prevSelectedTech) =>
             prevSelectedTech.includes(tech)
                 ? prevSelectedTech.filter((t) => t !== tech)
                 : [...prevSelectedTech, tech]
         );
-    };
+    }, [selectedTech]);
 
-    const filteredProjects = projects.filter(project =>
-        selectedTech.length === 0 || project.technologies?.some(tech => selectedTech.includes(tech))
-    );
+    const filteredProjects = useMemo(() => {
+        return projects.filter(project =>
+            selectedTech.length === 0 || project.technologies?.some(tech => selectedTech.includes(tech))
+        );
+    }, [projects, selectedTech]);
 
     const totalPages = Math.ceil(filteredProjects.length / ITEMS_PER_PAGE);
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const currentProjects = filteredProjects.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    const currentProjects = useMemo(() => {
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+        return filteredProjects.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    }, [filteredProjects, currentPage]);
 
-    const openModal = (project: Project) => setSelectedProject(project);
+    const openModal = useCallback((project: Project) => setSelectedProject(project), []);
     const closeModal = () => setSelectedProject(null);
 
-    const handleDeleteProject = (id: string) => {
+    const handleDeleteProject = useCallback((id: string) => {
         dispatch(removeProject(id));
-    };
+    }, [dispatch]);
 
-    const onPageChange = (page: number) => setCurrentPage(page);
+    const onPageChange = useCallback((page: number) => setCurrentPage(page), []);
 
     return (
         <div className="content-center mx-auto px-6 font-sans text-gray-800 dark:text-gray-100 dark:bg-gray-900">
