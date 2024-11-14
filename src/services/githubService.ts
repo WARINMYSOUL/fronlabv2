@@ -4,7 +4,7 @@ import { setProjects } from "../store/projectsSlice";
 import { Project } from "../types/Project";
 
 export interface Repository {
-    id: number;
+    id: string;
     name: string;
     html_url: string;
     description: string | null;

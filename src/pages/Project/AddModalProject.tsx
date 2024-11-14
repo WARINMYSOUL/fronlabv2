@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useCallback, useState} from "react";
 import { Modal, Button } from "flowbite-react";
 import { Project } from "../../types/Project.ts";
 import { useDispatch } from "react-redux";
@@ -6,6 +6,7 @@ import { AppDispatch } from "../../store";
 import { addProject } from "../../store/projectsSlice";
 import { useThemeMode } from "flowbite-react";
 import { motion } from "framer-motion";
+import { v4 as uuidv4 } from "uuid";
 
 interface AddModalProjectProps {
     isOpen: boolean;
@@ -17,32 +18,33 @@ export const AddModalProject: React.FC<AddModalProjectProps> = ({ isOpen, onClos
     const { computedMode } = useThemeMode();
 
     const [newProject, setNewProject] = useState<Project>({
-        id: Date.now(),
+        id: uuidv4(),
         title: "",
         description: "",
         technologies: [],
         link: ""
     });
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setNewProject(prevState => ({ ...prevState, [name]: value }));
-    };
+    }, []);
 
-    const handleTechChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleTechChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const tech = e.target.value;
         setNewProject(prevState => ({
             ...prevState,
             technologies: tech ? tech.split(",").map(t => t.trim()) : []
         }));
-    };
+    }, []);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = useCallback((e: React.FormEvent) => {
         e.preventDefault();
         dispatch(addProject(newProject));
         onClose();
-        setNewProject({ id: Date.now(), title: "", description: "", technologies: [], link: "" });
-    };
+        setNewProject({ id: uuidv4(), title: "", description: "", technologies: [], link: "" });
+    }, [dispatch, newProject, onClose]);
+
 
     const themeClass = computedMode === "dark" ? "bg-gray-900 text-gray-100" : "bg-white text-gray-800";
 

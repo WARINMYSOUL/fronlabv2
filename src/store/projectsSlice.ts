@@ -19,8 +19,7 @@ export const fetchProjectsFromGitHub = createAsyncThunk<Project[], string, { rej
     async (username, { rejectWithValue }) => {
         try {
             const repositories = await getUserRepositories(username);
-            const projects: Project[] = repositories.map(mapRepositoryToProject);
-            return projects;
+            return repositories.map(mapRepositoryToProject); // Убираем переменную `projects`
         } catch (error: unknown) {
             if (error instanceof Error) {
                 return rejectWithValue(error.message);
@@ -29,6 +28,7 @@ export const fetchProjectsFromGitHub = createAsyncThunk<Project[], string, { rej
         }
     }
 );
+
 
 const projectsSlice = createSlice({
     name: 'projects',
@@ -40,7 +40,7 @@ const projectsSlice = createSlice({
         addProject(state, action: PayloadAction<Project>) {
             state.items.push(action.payload);
         },
-        removeProject(state, action: PayloadAction<number>) {
+        removeProject(state, action: PayloadAction<string>) {
             state.items = state.items.filter(project => project.id !== action.payload);
         },
     },

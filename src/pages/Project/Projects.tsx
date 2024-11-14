@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../../store";
 import { fetchAndAddGitHubProjects } from "../../services/githubService";
@@ -20,44 +20,54 @@ export const Projects = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [currentPage, setCurrentPage] = useState<number>(1);
 
-    const loadProjects = async () => {
+    const loadProjects = useCallback(async () => {
         setLoading(true);
-        setTimeout(async () => {
-            await dispatch((dispatch, getState) => fetchAndAddGitHubProjects("WARINMYSOUL", dispatch, getState));
-            setLoading(false);
-        }, 1000);
-    };
-
-    useEffect(() => {
-        loadProjects();
+        await dispatch((dispatch, getState) => fetchAndAddGitHubProjects("WARINMYSOUL", dispatch, getState));
+        setLoading(false);
     }, [dispatch]);
 
-    const technologies = Array.from(new Set(projects.flatMap((project) => project.technologies || [])));
+    useEffect(() => {
+        const fetchData = async () => {
+            await loadProjects();
+        };
+        fetchData().catch((error) => {
+            console.error("Ошибка при загрузке проектов:", error);
+        });
+    }, [loadProjects]);
 
-    const toggleTech = (tech: string) => {
+
+    const technologies = useMemo(() => {
+        return Array.from(new Set(projects.flatMap((project) => project.technologies || [])));
+    }, [projects]);
+
+    const toggleTech = useCallback((tech: string) => {
         setSelectedTech((prevSelectedTech) =>
             prevSelectedTech.includes(tech)
                 ? prevSelectedTech.filter((t) => t !== tech)
                 : [...prevSelectedTech, tech]
         );
-    };
+    }, []);
 
-    const filteredProjects = projects.filter(project =>
-        selectedTech.length === 0 || project.technologies?.some(tech => selectedTech.includes(tech))
-    );
+    const filteredProjects = useMemo(() => {
+        return projects.filter(project =>
+            selectedTech.length === 0 || project.technologies?.some(tech => selectedTech.includes(tech))
+        );
+    }, [projects, selectedTech]);
 
     const totalPages = Math.ceil(filteredProjects.length / ITEMS_PER_PAGE);
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const currentProjects = filteredProjects.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    const currentProjects = useMemo(() => {
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+        return filteredProjects.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    }, [filteredProjects, currentPage]);
 
-    const openModal = (project: Project) => setSelectedProject(project);
+    const openModal = useCallback((project: Project) => setSelectedProject(project), []);
     const closeModal = () => setSelectedProject(null);
 
-    const handleDeleteProject = (id: number) => {
+    const handleDeleteProject = useCallback((id: string) => {
         dispatch(removeProject(id));
-    };
+    }, [dispatch]);
 
-    const onPageChange = (page: number) => setCurrentPage(page);
+    const onPageChange = useCallback((page: number) => setCurrentPage(page), []);
 
     return (
         <div className="content-center mx-auto px-6 font-sans text-gray-800 dark:text-gray-100 dark:bg-gray-900">
@@ -109,9 +119,9 @@ export const Projects = () => {
             )}
 
             <ul className="content-center list-none p-0 max-w-3xl mx-auto">
-                {currentProjects.map((project, index) => (
+                {currentProjects.map((project) => (
                     <li
-                        key={index}
+                        key={project.id}
                         onClick={() => openModal(project)}
                         className="relative bg-white dark:bg-gray-800 p-5 mb-4 rounded-lg shadow-md transition-all transform hover:scale-105 cursor-pointer"
                     >
@@ -120,7 +130,7 @@ export const Projects = () => {
                             <FaTrash
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    handleDeleteProject(project.id);
+                                    handleDeleteProject(project.id); // Убедитесь, что функция handleDeleteProject принимает строку
                                 }}
                                 className="text-red-500 dark:text-red-400 cursor-pointer hover:text-red-700 dark:hover:text-red-600"
                                 title="Удалить проект"
@@ -128,9 +138,9 @@ export const Projects = () => {
                         </div>
                         <p className="text-lg leading-relaxed mb-2">{project.description}</p>
                         <div className="mb-3 text-gray-600 dark:text-gray-300">
-                            <span className="text-sm font-semibold">
-                                Технологии: {Array.isArray(project.technologies) ? project.technologies.join(", ") : "Нет данных"}
-                            </span>
+            <span className="text-sm font-semibold">
+                Технологии: {Array.isArray(project.technologies) ? project.technologies.join(", ") : "Нет данных"}
+            </span>
                         </div>
                         <a
                             href={project.link}
@@ -143,6 +153,7 @@ export const Projects = () => {
                         </a>
                     </li>
                 ))}
+
             </ul>
 
             <div className="flex justify-center mt-6 mb-10">

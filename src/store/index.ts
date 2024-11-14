@@ -4,6 +4,8 @@ import projectsReducer from './projectsSlice';
 const preloadedState = {
     projects: {
         items: JSON.parse(localStorage.getItem('projects') || '[]'),
+        status: 'idle' as const,
+        error: null as string | null,
     }
 };
 
