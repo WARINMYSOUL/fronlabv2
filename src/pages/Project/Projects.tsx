@@ -20,15 +20,21 @@ export const Projects = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [currentPage, setCurrentPage] = useState<number>(1);
 
-    const loadProjects = async () => {
+    const loadProjects = useCallback(async () => {
         setLoading(true);
         await dispatch((dispatch, getState) => fetchAndAddGitHubProjects("WARINMYSOUL", dispatch, getState));
         setLoading(false);
-    };
+    }, [dispatch]);
 
     useEffect(() => {
-        loadProjects();
-    }, [dispatch]);
+        const fetchData = async () => {
+            await loadProjects();
+        };
+        fetchData().catch((error) => {
+            console.error("Ошибка при загрузке проектов:", error);
+        });
+    }, [loadProjects]);
+
 
     const technologies = useMemo(() => {
         return Array.from(new Set(projects.flatMap((project) => project.technologies || [])));
@@ -40,7 +46,7 @@ export const Projects = () => {
                 ? prevSelectedTech.filter((t) => t !== tech)
                 : [...prevSelectedTech, tech]
         );
-    }, [selectedTech]);
+    }, []);
 
     const filteredProjects = useMemo(() => {
         return projects.filter(project =>
